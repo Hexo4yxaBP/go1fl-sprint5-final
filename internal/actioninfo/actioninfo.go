@@ -23,7 +23,7 @@ func Info(dataset []string, dp DataParser) {
 
 		if err != nil {
 			log.Println(err)
-			//continue
+			continue
 		}
 
 		fmt.Println(str)

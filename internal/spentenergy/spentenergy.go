@@ -19,14 +19,25 @@ var (
 	ErrUnknownTrainType = errors.New("неизвестный тип тренировки") // Unknown Training Type error
 	ErrIncorrectParams  = errors.New("incorrect input parameters") // Incorrect input parameters error
 	ErrWrongData        = errors.New("wrong data format")          // Wrong data format error
+	ErrNegativeSteps    = errors.New("number of steps cannot be negative or zero")
+	ErrNegativeDuration = errors.New("duration cannot be negative or zero")
+	ErrNegativeWeight   = errors.New("weight cannot be negative or zero")
+	ErrNegativeHeight   = errors.New("height cannot be negative or zero")
 )
 
 // WalkingSpentCalories calculates spent calories for walking activity based on steps count, user weight and height and activity duration.
 // Returns 0 and "Incorrect input parameters" error if any parameter == 0.
 func WalkingSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error) {
 
-	if steps <= 0 || weight <= 0 || height <= 0 || duration <= 0 {
-		return 0, ErrIncorrectParams
+	switch {
+	case steps <= 0:
+		return 0, ErrNegativeSteps
+	case weight <= 0:
+		return 0, ErrNegativeWeight
+	case height <= 0:
+		return 0, ErrNegativeHeight
+	case duration <= 0:
+		return 0, ErrNegativeDuration
 	}
 
 	return weight * MeanSpeed(steps, height, duration) * duration.Minutes() / minInH * walkingCaloriesCoefficient, nil
@@ -36,8 +47,15 @@ func WalkingSpentCalories(steps int, weight, height float64, duration time.Durat
 // Returns 0 and "Incorrect input parameters" error if any parameter == 0.
 func RunningSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error) {
 
-	if steps <= 0 || weight <= 0 || height <= 0 || duration <= 0 {
-		return 0, ErrIncorrectParams
+	switch {
+	case steps <= 0:
+		return 0, ErrNegativeSteps
+	case weight <= 0:
+		return 0, ErrNegativeWeight
+	case height <= 0:
+		return 0, ErrNegativeHeight
+	case duration <= 0:
+		return 0, ErrNegativeDuration
 	}
 
 	return weight * MeanSpeed(steps, height, duration) * duration.Minutes() / minInH, nil

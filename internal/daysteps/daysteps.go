@@ -13,7 +13,9 @@ import (
 
 // Error vars definition.
 var (
-	ErrWrongData = errors.New("wrong data") // Wrong data format error
+	ErrWrongData        = errors.New("wrong data") // Wrong data format error
+	ErrNegativeSteps    = errors.New("number of steps cannot be negative or zero")
+	ErrNegativeDuration = errors.New("duration cannot be negative or zero")
 )
 
 type DaySteps struct {
@@ -37,14 +39,20 @@ func (ds *DaySteps) Parse(datastring string) (err error) {
 
 	steps, err := strconv.Atoi(splittedData[0])
 
-	if err != nil || steps <= 0 {
-		return errors.Join(ErrWrongData, err)
+	switch {
+	case err != nil:
+		return err
+	case steps <= 0:
+		return ErrNegativeSteps
 	}
 
 	duration, err := time.ParseDuration(splittedData[1])
 
-	if err != nil || duration <= 0 {
-		return errors.Join(ErrWrongData, err)
+	switch {
+	case err != nil:
+		return err
+	case duration <= 0:
+		return ErrNegativeDuration
 	}
 
 	ds.Steps, ds.Duration = steps, duration

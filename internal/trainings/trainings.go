@@ -15,6 +15,8 @@ var (
 	ErrUnknownTrainType = errors.New("неизвестный тип тренировки") // Unknown Training Type error
 	ErrIncorrectParams  = errors.New("incorrect input parameters") // Incorrect input parameters error
 	ErrWrongData        = errors.New("wrong data format")          // Wrong data format error
+	ErrNegativeSteps    = errors.New("number of steps cannot be negative or zero")
+	ErrNegativeDuration = errors.New("duration cannot be negative or zero")
 )
 
 type Training struct {
@@ -37,8 +39,12 @@ func (t *Training) Parse(datastring string) (err error) {
 
 	steps, err := strconv.Atoi(splittedData[0])
 
-	if err != nil || steps <= 0 {
-		return errors.Join(ErrWrongData, err)
+	if err != nil {
+		return err
+	}
+
+	if steps <= 0 {
+		return ErrNegativeSteps
 	}
 
 	activity := splittedData[1]
@@ -49,8 +55,12 @@ func (t *Training) Parse(datastring string) (err error) {
 
 	duration, err := time.ParseDuration(splittedData[2])
 
-	if err != nil || duration <= 0 {
-		return errors.Join(ErrWrongData, err)
+	if err != nil {
+		return err
+	}
+
+	if duration <= 0 {
+		return ErrNegativeDuration
 	}
 
 	t.Steps, t.TrainingType, t.Duration = steps, activity, duration

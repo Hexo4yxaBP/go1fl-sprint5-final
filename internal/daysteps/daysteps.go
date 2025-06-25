@@ -39,19 +39,21 @@ func (ds *DaySteps) Parse(datastring string) (err error) {
 
 	steps, err := strconv.Atoi(splittedData[0])
 
-	switch {
-	case err != nil:
+	if err != nil {
 		return err
-	case steps <= 0:
+	}
+
+	if steps <= 0 {
 		return ErrNegativeSteps
 	}
 
 	duration, err := time.ParseDuration(splittedData[1])
 
-	switch {
-	case err != nil:
+	if err != nil {
 		return err
-	case duration <= 0:
+	}
+
+	if duration <= 0 {
 		return ErrNegativeDuration
 	}
 
